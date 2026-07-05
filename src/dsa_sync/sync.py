@@ -77,7 +77,7 @@ def _resolve_problem_metadata(number: int) -> tuple[str, str, str, list[str]]:
     if fetched is not None:
         title, slug, difficulty, topics = fetched
         topic_str = ", ".join(topics) if topics else "no tags"
-        console.print(f"  Fetched: {number}. {title} — {difficulty} — {topic_str}")
+        console.print(f"  Fetched: {number}. {title} - {difficulty} - {topic_str}")
         if Confirm.ask("Correct?", default=True):
             return title, slug, difficulty, topics
     else:
@@ -167,7 +167,7 @@ def run_sync(config: Config) -> None:
     """Run the full interactive sync flow for one problem."""
     from . import __version__
 
-    console.print(f"[bold]dsa-sync v{__version__}[/bold] — syncing to {config.repository_path}\n")
+    console.print(f"[bold]dsa-sync v{__version__}[/bold] - syncing to {config.repository_path}\n")
     repository_path = _preflight(config)
 
     number = _prompt_problem_number()
