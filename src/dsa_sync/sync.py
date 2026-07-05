@@ -209,6 +209,12 @@ def run_sync(config: Config) -> None:
         ensure_problem_folder(txn, folder_path)
         console.print("[green]done[/green]")
 
+        if existing is not None and existing.solution_filename != problem.solution_filename:
+            stale_solution_path = folder_path / existing.solution_filename
+            if stale_solution_path.exists():
+                txn.snapshot(stale_solution_path)
+                stale_solution_path.unlink()
+
         solution_path = folder_path / problem.solution_filename
         console.print(f"Writing {problem.solution_filename}", end="  ")
         write_text_file(txn, solution_path, content)
