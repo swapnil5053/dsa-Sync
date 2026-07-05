@@ -4,30 +4,37 @@ A local CLI that turns every solved LeetCode problem into a clean, auto-maintain
 
 ## Why I built this
 
-I wanted something like LeetHub, which auto-commits your solutions to GitHub as you solve problems. The catch is that LeetHub (and most tools like it) needs OAuth access to your entire GitHub account through a browser extension, and I just wasn't comfortable handing that over. So I built a local version instead: it never talks to GitHub directly. It only ever shells out to the `git` binary already on my machine, using whatever auth I've already set up — SSH key, credential manager, whatever. No tokens stored anywhere, no login screens, nothing running in the background.
+I wanted something like LeetHub, which auto-commits your solutions as you solve problems. The catch is that LeetHub, and most tools like it, need OAuth access to your entire GitHub account through a browser extension, and I never got comfortable handing that over just to keep a solutions folder in sync. So I built a local version instead. It never talks to GitHub's API directly — it only ever shells out to the `git` binary already on my machine, using whatever auth I've already set up, SSH key or credential manager, whichever. No tokens stored anywhere, no login screens, nothing running in the background.
 
 ## How it works
 
-Solve a problem, then run `dsa-sync`. Type the problem number, and it pulls the title, difficulty, and topic tags from LeetCode's public (unauthenticated) API. Paste your solution in, and it scaffolds the folder, writes both READMEs, updates the repo-wide stats, commits with a message like `LC 217: Contains Duplicate`, and pushes.
+Solve a problem, run `dsa-sync`, type the problem number. It pulls the title, difficulty, and topic tags straight from LeetCode's public, unauthenticated API, so you don't have to type any of that yourself. Pick a language from a short numbered list, paste your solution in, and it takes care of the rest: scaffolds the folder, writes both READMEs, updates the repo-wide stats, commits with a message like `LC 217: Contains Duplicate`, and pushes.
 
 ```
-dsa-sync v1.0.0 — syncing to ~/projects/dsa
+dsa-sync v1.0.0 - syncing to ~/projects/dsa
 
-Problem number › 217
-  Fetched: 217. Contains Duplicate — Easy — Array, Hash Table
-  Correct? [Y/n] › y
+Problem number: 217
+  Fetched: 217. Contains Duplicate - Easy - Array, Hash Table
+Correct? [y/n] (y): y
 Language:
   [1] C++ (default)
   [2] Python
   [3] Java
-  ...
-Choice › (Enter to accept default)
+  [4] JavaScript
+  [5] TypeScript
+  [6] Go
+  [7] Rust
+  [8] Kotlin
+  [9] C#
+  [10] Ruby
+  [11] C
+Choice (1): 2
 
 Solution:
 (paste, finish with a line containing only "EOF")
 
 Creating LeetCode/0217-Contains-Duplicate/     done
-Writing solution.cpp                           done
+Writing solution.py                            done
 Writing README.md                              done
 Updating .dsa-sync/problems.json               done
 Regenerating root README.md                    done
@@ -38,7 +45,7 @@ git push                                       done
 Synced. Total problems: 163
 ```
 
-If LeetCode's API is unreachable, it just asks you for the title, difficulty, and tags manually instead of failing. It's meant to work fully offline if it has to.
+If LeetCode's API is unreachable, it just asks for the title, difficulty, and tags manually instead of failing outright. It's meant to work fully offline if it has to.
 
 ## Install
 
@@ -48,7 +55,7 @@ cd Dsa-Sync
 pipx install .
 ```
 
-Then run `dsa-sync` once. Since there's no config yet, it'll walk you through a guided first-run setup that points it at your solutions repo.
+Run `dsa-sync` once with no config in place, and it walks you through a short guided setup that points it at your solutions repo.
 
 ## Commands
 
@@ -68,7 +75,7 @@ Lives at `~/.config/dsa-sync/config.yaml`:
 ```yaml
 repository_path: ~/projects/dsa   # where your solutions repo lives
 leetcode_dir: LeetCode            # subfolder solutions go into
-default_language: C++             # default answer for the language prompt
+default_language: Python          # pre-selected option on the language menu
 git:
   auto_push: true                 # push after every commit
   commit_prefix: "LC"             # commit messages look like "LC 217: Contains Duplicate"
@@ -81,10 +88,12 @@ readme:
 ## Notes
 
 - Works offline. If LeetCode's API can't be reached, it falls back to manual entry instead of failing.
-- Never stores credentials. It only calls `git` locally — auth is whatever your machine already has configured.
-- Problem statements aren't embedded by default, out of respect for LeetCode's terms of service. The per-problem README just links to the problem instead.
+- Never stores credentials. It only calls `git` locally, and auth is whatever your machine already has configured.
+- Problem statements aren't embedded by default, out of respect for LeetCode's terms of service. The per-problem README just links back to the problem instead.
 
 ## References
 
 Helpful while building this:
-[<!-- add article/link here -->]()
+[Typer docs](https://typer.tiangolo.com/)
+[Rich docs](https://rich.readthedocs.io/)
+[pipx documentation](https://pipx.pypa.io/)
