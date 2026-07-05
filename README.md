@@ -16,11 +16,14 @@ dsa-sync v1.0.0 — syncing to ~/projects/dsa
 Problem number › 217
   Fetched: 217. Contains Duplicate — Easy — Array, Hash Table
   Correct? [Y/n] › y
-Language › C++ (default, Enter to accept)
+Language:
+  [1] C++ (default)
+  [2] Python
+  [3] Java
+  ...
+Choice › (Enter to accept default)
 
 Solution:
-  [1] Paste here  [2] File path  [3] Empty file
-Choice › 1
 (paste, finish with a line containing only "EOF")
 
 Creating LeetCode/0217-Contains-Duplicate/     done

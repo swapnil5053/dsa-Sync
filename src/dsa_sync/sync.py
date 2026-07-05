@@ -15,7 +15,7 @@ from .exceptions import (
     RepositoryNotFoundError,
     SyncAbortedError,
 )
-from .languages import normalize_language
+from .languages import LANGUAGE_EXTENSIONS, normalize_language
 from .models import Problem
 from .scaffold import SyncTransaction, ensure_problem_folder, write_text_file
 
@@ -35,15 +35,23 @@ def _prompt_problem_number() -> int:
 
 
 def _prompt_language(default: str) -> str:
+    """Show a numbered language menu; Enter picks the default, or type a number/name/alias."""
+    options = list(LANGUAGE_EXTENSIONS.keys())
+    default_index = options.index(default) + 1 if default in options else 1
+
+    console.print("Language:")
+    for index, language in enumerate(options, start=1):
+        marker = " (default)" if index == default_index else ""
+        console.print(f"  [{index}] {language}{marker}")
+
     while True:
-        raw = Prompt.ask("Language", default=default)
+        raw = Prompt.ask("Choice", default=str(default_index)).strip()
+        if raw.isdigit() and 1 <= int(raw) <= len(options):
+            return options[int(raw) - 1]
         normalized = normalize_language(raw)
         if normalized:
             return normalized
-        console.print(
-            f"[red]Unknown language '{raw}'.[/red] Try a full name or alias "
-            "(cpp, py, js, ts, go, rs, kt, cs, rb)."
-        )
+        console.print(f"[red]Enter a number 1-{len(options)}, or a language name/alias.[/red]")
 
 
 def _prompt_difficulty() -> str:
@@ -105,26 +113,9 @@ def _read_pasted_solution() -> str:
     return "\n".join(lines) + ("\n" if lines else "")
 
 
-def _read_file_solution() -> str:
-    while True:
-        raw_path = Prompt.ask("File path")
-        path = Path(raw_path).expanduser()
-        if not path.exists():
-            console.print(f"[red]File not found: {path}[/red]")
-            continue
-        return path.read_text(encoding="utf-8")
-
-
 def _prompt_solution() -> str:
     console.print("\nSolution:")
-    console.print("  [1] Paste here  [2] File path  [3] Empty file")
-    choice = Prompt.ask("Choice", choices=["1", "2", "3"], default="1")
-    if choice == "1":
-        content = _read_pasted_solution()
-    elif choice == "2":
-        content = _read_file_solution()
-    else:
-        content = ""
+    content = _read_pasted_solution()
 
     if not content.strip():
         if not Confirm.ask("Solution content is empty. Continue anyway?", default=False):
